@@ -47,7 +47,11 @@ module Phobos
           }.merge(listener_metadata)
 
           instrument('listener.process_batch', batch_metadata) do |batch_metadata|
-            time_elapsed = measure { process_batch(batch) }
+            if @handler_class.method_defined?(:consume_batch)
+              time_elapsed = measure { @handler_class.new.consume_batch(batch.messages, batch_metadata) }
+            else
+              time_elapsed = measure { process_batch(batch) }
+            end
             batch_metadata.merge!(time_elapsed: time_elapsed)
             Phobos.logger.info { Hash(message: 'Committed offset').merge(batch_metadata) }
           end
