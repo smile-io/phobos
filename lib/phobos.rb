@@ -80,12 +80,6 @@ module Phobos
       @logger.appenders = appenders
     end
 
-    def prefix_topic(topic)
-      prefix = config.try(:topic_prefix)
-      return topic if prefix.nil? || topic =~ /^#{prefix}/
-      prefix.to_s + topic
-    end
-
     private
 
     def fetch_settings(configuration)

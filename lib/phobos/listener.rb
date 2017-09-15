@@ -11,7 +11,7 @@ module Phobos
       @id = SecureRandom.hex[0...6]
       @handler_class = handler
       @group_id = group_id
-      @topic = Phobos.prefix_topic(topic)
+      @topic = topic
       @subscribe_opts = {
         start_from_beginning: start_from_beginning,
         max_bytes_per_partition: max_bytes_per_partition

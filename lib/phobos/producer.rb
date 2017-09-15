@@ -114,7 +114,7 @@ module Phobos
 
         def produce_messages(producer, messages)
           messages.each do |message|
-            producer.produce(message[:payload], topic: Phobos.prefix_topic(message[:topic]),
+            producer.produce(message[:payload], topic: message[:topic],
                                                 key: message[:key],
                                                 partition_key: message[:key]
             )
