@@ -47,11 +47,7 @@ module Phobos
           }.merge(listener_metadata)
 
           instrument('listener.process_batch', batch_metadata) do |batch_metadata|
-            if @handler_class.method_defined?(:consume_batch)
-              time_elapsed = measure { @handler_class.new.consume_batch(batch.messages, batch_metadata) }
-            else
-              time_elapsed = measure { process_batch(batch) }
-            end
+            time_elapsed = measure { process_batch(batch, batch_metadata) }
             batch_metadata.merge!(time_elapsed: time_elapsed)
             Phobos.logger.info { Hash(message: 'Committed offset').merge(batch_metadata) }
           end
@@ -105,7 +101,11 @@ module Phobos
       { listener_id: id, group_id: group_id, topic: topic }
     end
 
-    def process_batch(batch)
+    def process_batch(batch, batch_metadata)
+      if @handler_class.method_defined?(:consume_batch)
+        return @handler_class.new.consume_batch(batch.messages, batch_metadata)
+      end
+
       batch.messages.each do |message|
         backoff = Phobos.create_exponential_backoff
         metadata = listener_metadata.merge(
