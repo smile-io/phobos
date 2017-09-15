@@ -1,3 +1,7 @@
+# Optional, set a prefix that will be applied to each topic produced to or
+# subscribed from:
+topic_prefix:
+
 logger:
   # Optional log file, set to false or remove to disable it
   file: log/phobos.log
